@@ -1,0 +1,25 @@
+{
+  "name": "pantallas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon  server --ignore sistemawebpantallas",
+    "start": "node server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cloudinary": "^1.31.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "fs-extra": "^10.1.0",
+    "http-errors": "^2.0.0",
+    "mongoose": "^6.5.3",
+    "morgan": "^1.10.0"
+  }
+}
