@@ -28,7 +28,7 @@ export const createPost = async (req, res) => {
         public_id: result.public_id,
       };
 
-      console.log(result);
+      // console.log(result);
     }
 
     const Newpost = new Post({ title, descripcion, image });

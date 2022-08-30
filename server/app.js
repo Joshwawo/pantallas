@@ -24,9 +24,13 @@ app.use(fileupload({
 //Rutas
 app.use(postRoutes);
 
+
 // console.log(__dirname)
 // app.use(express.static(join(__dirname, '../client/build')))
 
+// app.get('*', (req,res)=>{
+//         res.sendFile(join(__dirname,'../sistemawebpantallas/build/index.html'))
+// })
 
 
 export default app
