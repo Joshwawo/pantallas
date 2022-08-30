@@ -6,12 +6,12 @@ import mongoose from 'mongoose'
 const postSchema = new mongoose.Schema({
     title: {
         type: String,
-        required:true,
+        // required:true,
         trim:true
     },
     descripcion:{
         type:String,
-        required:true,
+        // required:true,
         trim:true
     },
     image:{
@@ -19,6 +19,10 @@ const postSchema = new mongoose.Schema({
         public_id: String
 
     },
+    company:{
+        type: String,
+        trim:true
+    }
 })
 
 export default mongoose.model('Post',postSchema)

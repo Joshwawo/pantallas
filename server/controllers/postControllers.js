@@ -22,7 +22,7 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   try {
-    const { title, descripcion } = req.body;
+    const { title, descripcion, company } = req.body;
     let image;
 
     // console.log(req.files)
@@ -37,7 +37,7 @@ export const createPost = async (req, res) => {
       // console.log(result);
     }
 
-    const Newpost = new Post({ title, descripcion, image });
+    const Newpost = new Post({ title, descripcion, image, company });
     await Newpost.save();
 
     return res.json(Newpost);
