@@ -2,6 +2,12 @@ import Post from "../models/Post.js";
 import { uploadImage, deleteImage } from "../libs/cloudinary.js";
 import fs from "fs-extra";
 
+
+export const homepag = (req,res)=>{
+  res.json({meesage:'Hola desde la api de pantallas'})
+}
+
+
 export const getPost = async (req, res) => {
   try {
     // throw new Error('My New Errro!')
