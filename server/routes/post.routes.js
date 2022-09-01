@@ -5,7 +5,8 @@ import {
   deletePost,
   updatePost,
   getPostById,
-  homepag
+  homepag,
+  getCompany,
 } from "../controllers/postControllers.js";
 
 const router = Router();
@@ -21,5 +22,8 @@ router.put("/posts/:id", updatePost);
 router.delete("/posts/:id", deletePost);
 
 router.get("/posts/:id", getPostById);
+
+router.get("/postsCompanies",getCompany)
+
 
 export default router;
