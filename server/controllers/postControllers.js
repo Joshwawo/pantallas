@@ -24,6 +24,7 @@ export const signup = async (req, res) => {
     res.status(200).json({ auth: true, token });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Error al crear usuario" });
   }
 };
 
@@ -39,6 +40,8 @@ export const login = async (req, res) => {
     return res.status(200).json({ auth: true, token });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Error al iniciar sesión" });
+
   }
 };
 

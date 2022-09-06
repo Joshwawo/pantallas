@@ -29,7 +29,7 @@ router.get("/posts/:id",verifyToken, getPostById);
 
 router.get("/postsCompanies",verifyToken,getCompany)
 
-router.post("/signup",signup )
+router.post("/register",signup )
 
 router.post("/login",login)
 
