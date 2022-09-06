@@ -20,7 +20,9 @@ export const signup = async (req, res) => {
     const newUser = new User({ name, email, password });
     newUser.password = await newUser.encryptPassword(password);
     await newUser.save();
-    const token = jwt.sign({ _id: newUser._id }, JWT_SECRET, {});
+    const token = jwt.sign({ _id: newUser._id }, JWT_SECRET, {
+      
+    });
     res.status(200).json({ auth: true, token });
   } catch (error) {
     console.log(error);
