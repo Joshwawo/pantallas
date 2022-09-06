@@ -14,11 +14,11 @@ import { v2 as cloudinary } from "cloudinary";
 export const getCompany = async (req, res) => {
   try {
     let company = req.query;
-    console.log(company.company);
+    // console.log(company.company);
 
     const posts = await Post.find({ company: company.company });
     // console.log(posts);
-    console.log("req.query.company");
+    // console.log("req.query.company");
     res.json(posts);
   } catch (error) {
     console.log(error);
@@ -72,31 +72,37 @@ export const updatePost = async (req, res) => {
   try {
     let post = await Post.findById(req.params.id);
 
-    await cloudinary.uploader.destroy(post.image.public_id);
+    //await cloudinary.uploader.destroy(post.image.public_id);
 
-    let result;
-    if (req.files?.image) {
-      result = await uploadImage(req.files.image.tempFilePath);
+    if (req.files?.image === undefined) {
+      const data = {
+        title: req.body.title,
+        descripcion: req.body.descripcion,
+        company: req.body.company,
+        isActive: req.body.isActive,
+      };
+      post = await Post.findByIdAndUpdate(req.params.id, data, { new: true });
+      res.json(post);
+    } else if (req.files?.image) {
+      await cloudinary.uploader.destroy(post.image.public_id);
+
+      const result = await uploadImage(req.files.image.tempFilePath);
       await fs.remove(req.files.image.tempFilePath);
+
+      const data = {
+        title: req.body.title,
+        descripcion: req.body.descripcion,
+        company: req.body.company,
+        isActive: req.body.isActive,
+        image: {
+          url: result?.secure_url,
+          public_id: result?.public_id,
+        },
+      };
+
+      post = await Post.findByIdAndUpdate(req.params.id, data, { new: true });
+      res.json(post);
     }
-
-    const data = {
-      title: req.body.title,
-      descripcion: req.body.descripcion,
-      company: req.body.company,
-      isActive: req.body.isActive,
-      image: {
-        url: result?.secure_url || post.image.url,
-        public_id: result?.public_id || post.image.public_id,
-      },
-    };
-
-    post = await Post.findByIdAndUpdate(req.params.id, data, { new: true });
-    res.json(post);
-
-    // const { title, descripcion, image, company, isActive } = req.body;
-
-    // res.json(post);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
@@ -130,8 +136,6 @@ export const getPostById = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-
 
 // export const updatePost = async (req, res) => {
 //   try {
