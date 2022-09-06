@@ -29,9 +29,9 @@ router.get("/posts/:id",verifyToken, getPostById);
 
 router.get("/postsCompanies",verifyToken,getCompany)
 
-router.post("/signup",verifyToken,signup )
+router.post("/signup",signup )
 
-router.post("/login",verifyToken,login)
+router.post("/login",login)
 
 
 export default router;
