@@ -2,6 +2,9 @@ import Post from "../models/Post.js";
 import { uploadImage, deleteImage, updateImage } from "../libs/cloudinary.js";
 import fs from "fs-extra";
 import { v2 as cloudinary } from "cloudinary";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import { JWT_SECRET } from "../config.js";
 
 // export const getPostest = async (req, res)=>{
 
@@ -11,14 +14,40 @@ import { v2 as cloudinary } from "cloudinary";
 //     res.json(posts);
 // }
 
+export const signup = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const newUser = new User({ name, email, password });
+    newUser.password = await newUser.encryptPassword(password);
+    await newUser.save();
+    const token = jwt.sign({ _id: newUser._id }, JWT_SECRET, {});
+    res.status(200).json({ auth: true, token });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).send("The email doesn't exists");
+    const matchPassword = await user.matchPassword(password);
+    if (!matchPassword)
+      return res.status(401).json({ auth: false, token: null });
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {});
+    return res.status(200).json({ auth: true, token });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getCompany = async (req, res) => {
   try {
     let company = req.query;
-    // console.log(company.company);
 
     const posts = await Post.find({ company: company.company });
-    // console.log(posts);
-    // console.log("req.query.company");
+
     res.json(posts);
   } catch (error) {
     console.log(error);
@@ -26,7 +55,7 @@ export const getCompany = async (req, res) => {
 };
 
 export const homepag = (req, res) => {
-  res.json({ meesage: "Hola desde la api de pantallas" });
+  res.json({ meesage: "Hello from the display api" });
 };
 
 export const getPost = async (req, res) => {
@@ -136,17 +165,3 @@ export const getPostById = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-// export const updatePost = async (req, res) => {
-//   try {
-//     //La propiedad esta del findByIdAndUpdate me regresa el id y lo actualiza, pero me regresa el post origina, y no el actualizado, asi que usar la propiedad new:True
-//     const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
-//       new: true,
-//     });
-//     // console.log(updatedPost)
-//     console.log(updatedPost);
-//     return res.send(updatedPost);
-//   } catch (error) {
-//     return res.status(500).json({ message: error.message });
-//   }
-// };
