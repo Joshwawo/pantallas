@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "repository": "https://github.com/Joshwawo/pantallas",
   "scripts": {
     "dev": "nodemon  server --ignore sistemawebpantallas",
-    "start": "node server"
+    "start": "node server/index.js  --ignore sistemawebpantallas"
   },
   "keywords": [],
   "author": "",
