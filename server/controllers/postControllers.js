@@ -14,39 +14,6 @@ import { JWT_SECRET } from "../config.js";
 //     res.json(posts);
 // }
 
-export const signup = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    const newUser = new User({ name, email, password });
-    newUser.password = await newUser.encryptPassword(password);
-    await newUser.save();
-    const token = jwt.sign({ _id: newUser._id }, JWT_SECRET, {
-      
-    });
-    res.status(200).json({ auth: true, token });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error al crear usuario" });
-  }
-};
-
-export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(401).send("The email doesn't exists");
-    const matchPassword = await user.matchPassword(password);
-    if (!matchPassword)
-      return res.status(401).json({ auth: false, token: null });
-    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {});
-    return res.status(200).json({ auth: true, token });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error al iniciar sesión" });
-
-  }
-};
-
 export const getCompany = async (req, res) => {
   try {
     let company = req.query;
@@ -143,16 +110,32 @@ export const updatePost = async (req, res) => {
   }
 };
 
+// export const deletePost = async (req, res) => {
+//   try {
+//     const postDeleted = await Post.findOneAndDelete(req.params.id);
+
+//     if (!postDeleted) return res.sendStatus(404);
+
+//     if (postDeleted.image.public_id) {
+//       await deleteImage(postDeleted.image.public_id);
+//     }
+//     return res.sendStatus(204);
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
+
 export const deletePost = async (req, res) => {
   try {
-    const postDeleted = await Post.findOneAndDelete(req.params.id);
+    const { id } = req.params;
+    const post = await Post.findByIdAndDelete(id);
 
-    if (!postDeleted) return res.sendStatus(404);
-
-    if (postDeleted.image.public_id) {
-      await deleteImage(postDeleted.image.public_id);
+    if (post && post.image.public_id) {
+      await deleteImage(post.image.public_id);
     }
-    return res.sendStatus(204);
+
+    if (!post) return res.sendStatus(404);
+    res.sendStatus(204);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -168,5 +151,35 @@ export const getPostById = async (req, res) => {
     return res.json(postById);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+export const signup = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const newUser = new User({ name, email, password });
+    newUser.password = await newUser.encryptPassword(password);
+    await newUser.save();
+    const token = jwt.sign({ _id: newUser._id }, JWT_SECRET, {});
+    res.status(200).json({ auth: true, token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al crear usuario" });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).send("The email doesn't exists");
+    const matchPassword = await user.matchPassword(password);
+    if (!matchPassword)
+      return res.status(401).json({ auth: false, token: null });
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {});
+    return res.status(200).json({ auth: true, token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al iniciar sesión" });
   }
 };
